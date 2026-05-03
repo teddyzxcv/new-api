@@ -1,20 +1,25 @@
-# Stage deployment — builds from local source via the production multi-stage
-# Dockerfile (full frontend build + go:embed). Stage-scoped names/volumes/
-# networks let it coexist with dev/prod on the same Dokploy host.
+# Stage deployment — pulls a pre-built image from Yandex Cloud Container
+# Registry (cr.yandex). Build + push happens locally via
+# `scripts/push-stage.sh`; Dokploy only pulls and runs.
 #
 # Dokploy:
 #   - Map a domain to service `new-api` port 3000 (Traefik handles routing).
-#   - Provide secrets via Dokploy env UI or a `.env.stage` file:
+#   - Provide env via Dokploy UI or a `.env.stage` file:
+#       NEW_API_IMAGE  (e.g. cr.yandex/<registry-id>/new-api:feat-foo-abc1234)
 #       POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB,
 #       REDIS_PASSWORD, SESSION_SECRET,
 #       GLOBAL_WEB_RATE_LIMIT_ENABLE, GLOBAL_API_RATE_LIMIT_ENABLE,
 #       CRITICAL_RATE_LIMIT_ENABLE
+#   - The Dokploy host must be authenticated to cr.yandex (either run
+#     `yc container registry configure-docker`, or attach a service account
+#     with role `container-registry.images.puller`).
 #
-# Local usage:
-#   docker compose -f docker-compose.stage.yml --env-file .env.stage up -d --build
+# Local usage (after pushing an image):
+#   NEW_API_IMAGE=cr.yandex/<id>/new-api:<tag> \
+#     docker compose -f docker-compose.stage.yml --env-file .env.stage up -d
 #
-# Rebuild after code changes:
-#   docker compose -f docker-compose.stage.yml up -d --build new-api
+# Build + push current branch to cr.yandex:
+#   YC_REGISTRY_ID=crpxxxxxxxxxxxx ./scripts/push-stage.sh
 #
 # Stop / reset:
 #   docker compose -f docker-compose.stage.yml down
@@ -22,10 +27,8 @@
 
 services:
   new-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: new-api-stage:local
+    image: ${NEW_API_IMAGE:?NEW_API_IMAGE must be set, e.g. cr.yandex/<registry-id>/new-api:<tag>}
+    pull_policy: always
     container_name: new-api-stage
     restart: unless-stopped
     expose:
