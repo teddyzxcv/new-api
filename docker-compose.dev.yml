@@ -22,20 +22,15 @@ services:
     image: new-api-dev:local
     container_name: new-api-dev
     restart: unless-stopped
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     volumes:
       - dev_data:/data
     environment:
       - SQL_DSN=postgresql://root:123456@postgres:5432/new-api
       - REDIS_CONN_STRING=redis://redis
       - TZ=Asia/Shanghai
-      - ERROR_LOG_ENABLED=true
       - BATCH_UPDATE_ENABLED=true
-      - NODE_NAME=new-api-dev
-      - GLOBAL_WEB_RATE_LIMIT_ENABLE=false
-      - GLOBAL_API_RATE_LIMIT_ENABLE=false
-      - CRITICAL_RATE_LIMIT_ENABLE=false
     depends_on:
       redis:
         condition: service_started

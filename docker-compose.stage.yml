@@ -1,0 +1,94 @@
+# Stage deployment — builds from local source via the production multi-stage
+# Dockerfile (full frontend build + go:embed). Stage-scoped names/volumes/
+# networks let it coexist with dev/prod on the same Dokploy host.
+#
+# Dokploy:
+#   - Map a domain to service `new-api` port 3000 (Traefik handles routing).
+#   - Provide secrets via Dokploy env UI or a `.env.stage` file:
+#       POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB,
+#       REDIS_PASSWORD, SESSION_SECRET,
+#       GLOBAL_WEB_RATE_LIMIT_ENABLE, GLOBAL_API_RATE_LIMIT_ENABLE,
+#       CRITICAL_RATE_LIMIT_ENABLE
+#
+# Local usage:
+#   docker compose -f docker-compose.stage.yml --env-file .env.stage up -d --build
+#
+# Rebuild after code changes:
+#   docker compose -f docker-compose.stage.yml up -d --build new-api
+#
+# Stop / reset:
+#   docker compose -f docker-compose.stage.yml down
+#   docker compose -f docker-compose.stage.yml down -v   # also wipes data
+
+services:
+  new-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: new-api-stage:local
+    container_name: new-api-stage
+    restart: unless-stopped
+    expose:
+      - "3000"
+    volumes:
+      - stage_data:/data
+      - stage_logs:/app/logs
+    command: --log-dir /app/logs
+    environment:
+      - SQL_DSN=postgresql://${POSTGRES_USER:-stage}:${POSTGRES_PASSWORD:-stage}@postgres:5432/${POSTGRES_DB:-new-api}
+      - REDIS_CONN_STRING=redis://:${REDIS_PASSWORD:-stage}@redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-change-me-stage}
+      - TZ=Asia/Shanghai
+      - ERROR_LOG_ENABLED=true
+      - BATCH_UPDATE_ENABLED=true
+      - NODE_NAME=new-api-stage
+      - GLOBAL_WEB_RATE_LIMIT_ENABLE=${GLOBAL_WEB_RATE_LIMIT_ENABLE}
+      - GLOBAL_API_RATE_LIMIT_ENABLE=${GLOBAL_API_RATE_LIMIT_ENABLE}
+      - CRITICAL_RATE_LIMIT_ENABLE=${CRITICAL_RATE_LIMIT_ENABLE}
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    networks:
+      - stage-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: new-api-stage-redis
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-stage}"]
+    networks:
+      - stage-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: new-api-stage-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-stage}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-stage}
+      POSTGRES_DB: ${POSTGRES_DB:-new-api}
+    volumes:
+      - stage_pg_data:/var/lib/postgresql/data
+    networks:
+      - stage-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-stage} -d ${POSTGRES_DB:-new-api}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  stage_data:
+  stage_logs:
+  stage_pg_data:
+
+networks:
+  stage-network:
+    driver: bridge
