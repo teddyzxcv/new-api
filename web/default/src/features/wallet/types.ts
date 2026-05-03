@@ -36,6 +36,11 @@ export type WaffoPancakePaymentResponse = ApiResponse<
     }
   | string
 >
+export type RobokassaPaymentResponse = ApiResponse<
+  Record<string, string> | string
+> & {
+  url?: string
+}
 
 /**
  * Creem product configuration
@@ -127,6 +132,10 @@ export interface TopupInfo {
   enable_waffo_pancake_topup?: boolean
   /** Minimum topup amount for Waffo Pancake */
   waffo_pancake_min_topup?: number
+  /** Whether Robokassa topup is enabled */
+  enable_robokassa_topup?: boolean
+  /** Minimum topup amount for Robokassa */
+  robokassa_min_topup?: number
 }
 
 /**
@@ -171,6 +180,14 @@ export interface WaffoPaymentRequest {
  * Waffo Pancake payment request parameters
  */
 export interface WaffoPancakePaymentRequest {
+  /** Topup amount */
+  amount: number
+}
+
+/**
+ * Robokassa payment request parameters
+ */
+export interface RobokassaPaymentRequest {
   /** Topup amount */
   amount: number
 }

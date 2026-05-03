@@ -21,6 +21,7 @@ import {
   useCreemPayment,
   useWaffoPayment,
   useWaffoPancakePayment,
+  useRobokassaPayment,
 } from './hooks'
 import {
   getDefaultPaymentType,
@@ -84,6 +85,8 @@ export function Wallet(props: WalletProps) {
   const { processWaffoPayment } = useWaffoPayment()
   const { processing: pancakeProcessing, processWaffoPancakePayment } =
     useWaffoPancakePayment()
+  const { processing: robokassaProcessing, processRobokassaPayment } =
+    useRobokassaPayment()
 
   // Fetch and refresh user data
   const fetchUser = useCallback(async () => {
@@ -227,6 +230,15 @@ export function Wallet(props: WalletProps) {
     }
   }
 
+  const handleRobokassaSelect = async () => {
+    setPaymentLoading('robokassa')
+    try {
+      await processRobokassaPayment(topupAmount)
+    } finally {
+      setPaymentLoading(null)
+    }
+  }
+
   // Get discount rate for current topup amount
   const getDiscountRate = useCallback(() => {
     return topupInfo?.discount?.[topupAmount] || DEFAULT_DISCOUNT_RATE
@@ -288,6 +300,10 @@ export function Wallet(props: WalletProps) {
                   enableWaffoPancakeTopup={
                     topupInfo?.enable_waffo_pancake_topup
                   }
+                  enableRobokassaTopup={topupInfo?.enable_robokassa_topup}
+                  robokassaMinTopup={topupInfo?.robokassa_min_topup}
+                  onRobokassaSelect={handleRobokassaSelect}
+                  robokassaProcessing={robokassaProcessing}
                 />
               </div>
 

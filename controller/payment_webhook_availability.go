@@ -85,6 +85,29 @@ func isWaffoPancakeWebhookEnabled() bool {
 	return isWaffoPancakeTopUpEnabled()
 }
 
+func isRobokassaTopUpEnabled() bool {
+	if !setting.RobokassaEnabled {
+		return false
+	}
+	return isRobokassaWebhookConfigured()
+}
+
+func isRobokassaWebhookConfigured() bool {
+	if strings.TrimSpace(setting.RobokassaMerchantLogin) == "" {
+		return false
+	}
+	if setting.RobokassaSandbox {
+		return strings.TrimSpace(setting.RobokassaTestPassword1) != "" &&
+			strings.TrimSpace(setting.RobokassaTestPassword2) != ""
+	}
+	return strings.TrimSpace(setting.RobokassaPassword1) != "" &&
+		strings.TrimSpace(setting.RobokassaPassword2) != ""
+}
+
+func isRobokassaWebhookEnabled() bool {
+	return isRobokassaTopUpEnabled()
+}
+
 func isEpayTopUpEnabled() bool {
 	return isEpayWebhookConfigured() && len(operation_setting.PayMethods) > 0
 }
