@@ -22,8 +22,8 @@ services:
     image: new-api-dev:local
     container_name: new-api-dev
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     volumes:
       - dev_data:/data
     environment:
