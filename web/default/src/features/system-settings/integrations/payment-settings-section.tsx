@@ -31,6 +31,10 @@ import {
   removeTrailingSlash,
 } from './utils'
 import {
+  RobokassaSettingsSection,
+  type RobokassaSettingsValues,
+} from './robokassa-settings-section'
+import {
   WaffoPancakeSettingsSection,
   type WaffoPancakeSettingsValues,
 } from './waffo-pancake-settings-section'
@@ -111,12 +115,14 @@ type PaymentSettingsSectionProps = {
   defaultValues: PaymentFormValues
   waffoDefaultValues: WaffoSettingsValues
   waffoPancakeDefaultValues: WaffoPancakeSettingsValues
+  robokassaDefaultValues: RobokassaSettingsValues
 }
 
 export function PaymentSettingsSection({
   defaultValues,
   waffoDefaultValues,
   waffoPancakeDefaultValues,
+  robokassaDefaultValues,
 }: PaymentSettingsSectionProps) {
   const { t } = useTranslation()
   const updateOption = useUpdateOption()
@@ -1291,6 +1297,10 @@ export function PaymentSettingsSection({
       <Separator />
 
       <WaffoPancakeSettingsSection defaultValues={waffoPancakeDefaultValues} />
+
+      <Separator />
+
+      <RobokassaSettingsSection defaultValues={robokassaDefaultValues} />
       {/* eslint-enable react-hooks/refs */}
     </SettingsSection>
   )

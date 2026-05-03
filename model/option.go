@@ -118,6 +118,20 @@ func InitOptionMap() {
 	common.OptionMap["WaffoPancakeCurrency"] = setting.WaffoPancakeCurrency
 	common.OptionMap["WaffoPancakeUnitPrice"] = strconv.FormatFloat(setting.WaffoPancakeUnitPrice, 'f', -1, 64)
 	common.OptionMap["WaffoPancakeMinTopUp"] = strconv.Itoa(setting.WaffoPancakeMinTopUp)
+	common.OptionMap["RobokassaEnabled"] = strconv.FormatBool(setting.RobokassaEnabled)
+	common.OptionMap["RobokassaMerchantLogin"] = setting.RobokassaMerchantLogin
+	common.OptionMap["RobokassaPassword1"] = setting.RobokassaPassword1
+	common.OptionMap["RobokassaPassword2"] = setting.RobokassaPassword2
+	common.OptionMap["RobokassaTestPassword1"] = setting.RobokassaTestPassword1
+	common.OptionMap["RobokassaTestPassword2"] = setting.RobokassaTestPassword2
+	common.OptionMap["RobokassaSandbox"] = strconv.FormatBool(setting.RobokassaSandbox)
+	common.OptionMap["RobokassaCurrency"] = setting.RobokassaCurrency
+	common.OptionMap["RobokassaUnitPrice"] = strconv.FormatFloat(setting.RobokassaUnitPrice, 'f', -1, 64)
+	common.OptionMap["RobokassaMinTopUp"] = strconv.Itoa(setting.RobokassaMinTopUp)
+	common.OptionMap["RobokassaSignatureAlgo"] = setting.RobokassaSignatureAlgo
+	common.OptionMap["RobokassaResultUrl"] = setting.RobokassaResultUrl
+	common.OptionMap["RobokassaSuccessUrl"] = setting.RobokassaSuccessUrl
+	common.OptionMap["RobokassaFailUrl"] = setting.RobokassaFailUrl
 	common.OptionMap["TopupGroupRatio"] = common.TopupGroupRatio2JSONString()
 	common.OptionMap["Chats"] = setting.Chats2JsonString()
 	common.OptionMap["AutoGroups"] = setting.AutoGroups2JsonString()
@@ -443,6 +457,34 @@ func updateOptionMap(key string, value string) (err error) {
 		setting.WaffoPancakeUnitPrice, _ = strconv.ParseFloat(value, 64)
 	case "WaffoPancakeMinTopUp":
 		setting.WaffoPancakeMinTopUp, _ = strconv.Atoi(value)
+	case "RobokassaEnabled":
+		setting.RobokassaEnabled = value == "true"
+	case "RobokassaMerchantLogin":
+		setting.RobokassaMerchantLogin = value
+	case "RobokassaPassword1":
+		setting.RobokassaPassword1 = value
+	case "RobokassaPassword2":
+		setting.RobokassaPassword2 = value
+	case "RobokassaTestPassword1":
+		setting.RobokassaTestPassword1 = value
+	case "RobokassaTestPassword2":
+		setting.RobokassaTestPassword2 = value
+	case "RobokassaSandbox":
+		setting.RobokassaSandbox = value == "true"
+	case "RobokassaCurrency":
+		setting.RobokassaCurrency = value
+	case "RobokassaUnitPrice":
+		setting.RobokassaUnitPrice, _ = strconv.ParseFloat(value, 64)
+	case "RobokassaMinTopUp":
+		setting.RobokassaMinTopUp, _ = strconv.Atoi(value)
+	case "RobokassaSignatureAlgo":
+		setting.RobokassaSignatureAlgo = value
+	case "RobokassaResultUrl":
+		setting.RobokassaResultUrl = value
+	case "RobokassaSuccessUrl":
+		setting.RobokassaSuccessUrl = value
+	case "RobokassaFailUrl":
+		setting.RobokassaFailUrl = value
 	case "TopupGroupRatio":
 		err = common.UpdateTopupGroupRatioByJSONString(value)
 	case "GitHubClientId":

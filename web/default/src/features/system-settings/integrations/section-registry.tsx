@@ -66,6 +66,22 @@ const INTEGRATIONS_SECTIONS = [
           WaffoPancakeUnitPrice: settings.WaffoPancakeUnitPrice ?? 1,
           WaffoPancakeMinTopUp: settings.WaffoPancakeMinTopUp ?? 1,
         }}
+        robokassaDefaultValues={{
+          RobokassaEnabled: settings.RobokassaEnabled ?? false,
+          RobokassaMerchantLogin: settings.RobokassaMerchantLogin ?? '',
+          RobokassaPassword1: settings.RobokassaPassword1 ?? '',
+          RobokassaPassword2: settings.RobokassaPassword2 ?? '',
+          RobokassaTestPassword1: settings.RobokassaTestPassword1 ?? '',
+          RobokassaTestPassword2: settings.RobokassaTestPassword2 ?? '',
+          RobokassaSandbox: settings.RobokassaSandbox ?? false,
+          RobokassaCurrency: settings.RobokassaCurrency ?? 'RUB',
+          RobokassaUnitPrice: settings.RobokassaUnitPrice ?? 1,
+          RobokassaMinTopUp: settings.RobokassaMinTopUp ?? 1,
+          RobokassaSignatureAlgo: settings.RobokassaSignatureAlgo ?? 'md5',
+          RobokassaResultUrl: settings.RobokassaResultUrl ?? '',
+          RobokassaSuccessUrl: settings.RobokassaSuccessUrl ?? '',
+          RobokassaFailUrl: settings.RobokassaFailUrl ?? '',
+        }}
       />
     ),
   },

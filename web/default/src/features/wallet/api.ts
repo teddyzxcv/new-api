@@ -20,6 +20,8 @@ import type {
   WaffoPaymentResponse,
   WaffoPancakePaymentRequest,
   WaffoPancakePaymentResponse,
+  RobokassaPaymentRequest,
+  RobokassaPaymentResponse,
 } from './types'
 
 // ============================================================================
@@ -148,6 +150,33 @@ export async function requestWaffoPancakePayment(
     skipBusinessError: true,
   } as Record<string, unknown>)
   return res.data
+}
+
+/**
+ * Calculate payment amount for Robokassa payment
+ */
+export async function calculateRobokassaAmount(
+  request: AmountRequest
+): Promise<AmountResponse> {
+  const res = await api.post('/api/user/robokassa/amount', request, {
+    skipBusinessError: true,
+  } as Record<string, unknown>)
+  return res.data
+}
+
+/**
+ * Request Robokassa payment
+ */
+export async function requestRobokassaPayment(
+  request: RobokassaPaymentRequest
+): Promise<RobokassaPaymentResponse> {
+  const res = await api.post('/api/user/robokassa/pay', request, {
+    skipBusinessError: true,
+  } as Record<string, unknown>)
+  return {
+    ...res.data,
+    url: res.data.url || (res as unknown as { url?: string }).url,
+  }
 }
 
 /**

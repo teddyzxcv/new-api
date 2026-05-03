@@ -1,5 +1,5 @@
 {
-  "Go to Settings": "Go to Settings",
-  "Failed to adjust quota": "Failed to adjust quota",
-  "Select an operation mode and enter the amount": "Select an operation mode and enter the amount"
+  "Configure Robokassa payment integration for Russian and CIS users": "Configure Robokassa payment integration for Russian and CIS users",
+  "Configure ResultURL in Robokassa dashboard to: <ServerAddress>/api/robokassa/result. Use Password #2 for ResultURL signing.": "Configure ResultURL in Robokassa dashboard to: <ServerAddress>/api/robokassa/result. Use Password #2 for ResultURL signing.",
+  "Leave blank to keep existing": "Leave blank to keep existing"
 }

@@ -74,6 +74,20 @@ const defaultIntegrationSettings: IntegrationSettingsType = {
   WaffoPancakeCurrency: 'USD',
   WaffoPancakeUnitPrice: 1,
   WaffoPancakeMinTopUp: 1,
+  RobokassaEnabled: false,
+  RobokassaMerchantLogin: '',
+  RobokassaPassword1: '',
+  RobokassaPassword2: '',
+  RobokassaTestPassword1: '',
+  RobokassaTestPassword2: '',
+  RobokassaSandbox: false,
+  RobokassaCurrency: 'RUB',
+  RobokassaUnitPrice: 1,
+  RobokassaMinTopUp: 1,
+  RobokassaSignatureAlgo: 'md5',
+  RobokassaResultUrl: '',
+  RobokassaSuccessUrl: '',
+  RobokassaFailUrl: '',
 }
 
 export function IntegrationSettings() {

@@ -64,6 +64,10 @@ interface RechargeFormCardProps {
   waffoMinTopup?: number
   onWaffoMethodSelect?: (method: WaffoPayMethod, index: number) => void
   enableWaffoPancakeTopup?: boolean
+  enableRobokassaTopup?: boolean
+  robokassaMinTopup?: number
+  onRobokassaSelect?: () => void
+  robokassaProcessing?: boolean
 }
 
 export function RechargeFormCard({
@@ -94,6 +98,10 @@ export function RechargeFormCard({
   waffoMinTopup,
   onWaffoMethodSelect,
   enableWaffoPancakeTopup,
+  enableRobokassaTopup,
+  robokassaMinTopup,
+  onRobokassaSelect,
+  robokassaProcessing,
 }: RechargeFormCardProps) {
   const { t } = useTranslation()
   const [localAmount, setLocalAmount] = useState(topupAmount.toString())
@@ -114,7 +122,8 @@ export function RechargeFormCard({
     topupInfo?.enable_online_topup ||
     topupInfo?.enable_stripe_topup ||
     enableWaffoTopup ||
-    enableWaffoPancakeTopup
+    enableWaffoPancakeTopup ||
+    enableRobokassaTopup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const hasStandardPaymentMethods =
     Array.isArray(topupInfo?.pay_methods) && topupInfo.pay_methods.length > 0
@@ -346,6 +355,47 @@ export function RechargeFormCard({
                     </Alert>
                   )}
                 </div>
+
+                {enableRobokassaTopup && onRobokassaSelect && (
+                  <div className='space-y-2.5 sm:space-y-3'>
+                    <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
+                      {t('Robokassa')}
+                    </Label>
+                    {(() => {
+                      const robokassaMin = robokassaMinTopup || 0
+                      const belowMin = robokassaMin > topupAmount
+                      const button = (
+                        <Button
+                          variant='outline'
+                          onClick={onRobokassaSelect}
+                          disabled={belowMin || !!robokassaProcessing}
+                          className='h-9 min-w-0 justify-start gap-2 rounded-lg px-3'
+                        >
+                          {robokassaProcessing ? (
+                            <Loader2 className='h-4 w-4 animate-spin' />
+                          ) : (
+                            getPaymentIcon('robokassa')
+                          )}
+                          <span className='truncate'>{t('Robokassa')}</span>
+                        </Button>
+                      )
+                      return belowMin ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>{button}</TooltipTrigger>
+                            <TooltipContent>
+                              {t('Minimum topup amount: {{amount}}', {
+                                amount: robokassaMin,
+                              })}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        button
+                      )
+                    })()}
+                  </div>
+                )}
 
                 {enableWaffoTopup &&
                   hasWaffoPaymentMethods &&

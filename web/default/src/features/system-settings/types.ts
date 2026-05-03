@@ -199,6 +199,20 @@ export type IntegrationSettings = {
   WaffoPancakeCurrency: string
   WaffoPancakeUnitPrice: number
   WaffoPancakeMinTopUp: number
+  RobokassaEnabled: boolean
+  RobokassaMerchantLogin: string
+  RobokassaPassword1: string
+  RobokassaPassword2: string
+  RobokassaTestPassword1: string
+  RobokassaTestPassword2: string
+  RobokassaSandbox: boolean
+  RobokassaCurrency: string
+  RobokassaUnitPrice: number
+  RobokassaMinTopUp: number
+  RobokassaSignatureAlgo: string
+  RobokassaResultUrl: string
+  RobokassaSuccessUrl: string
+  RobokassaFailUrl: string
 }
 
 export type ModelSettings = {
